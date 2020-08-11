@@ -3,6 +3,11 @@ const Discord = require('discord.js');
 const client = new Discord.Client();
 const fetch = require("node-fetch");
 const math = require("mathjs")
+const mongoose = require("mongoose")
+
+mongoose.connect('mongodb+srv://vtao:${process.env.MONGODB_PASSWORD}@cluster0.ibtua.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority', 
+    {useNewUrlParser: true,
+    useUnifiedTopology: true}).then(console.log("Connected to DB"));
 
 client.on('ready', () => {
     console.log(`Logged in as ${client.user.tag}!`);
