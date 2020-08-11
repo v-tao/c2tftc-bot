@@ -46,7 +46,7 @@ const formatDays = (days) => {
 
 client.on('message', msg => {
     if (msg.content.toLowerCase().indexOf("say ") >= 0 && !msg.author.bot) {
-        const newMessage = msg.content.substring(msg.content.indexOf("say ") + 4, msg.content.length);
+        const newMessage = msg.content.substring(msg.content.toLowerCase().indexOf("say ") + 4, msg.content.length);
         msg.channel.send(newMessage);
     }
 
@@ -117,7 +117,7 @@ client.on('message', msg => {
         }
     }
 
-    if (msg.author.username === "sleepy") {
+    if (msg.author.id == 356797398040707075) {
         msg.channel.send("alex no")
     }
 });
