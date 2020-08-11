@@ -2,10 +2,11 @@ require('dotenv').config();
 const Discord = require('discord.js');
 const client = new Discord.Client();
 const fetch = require("node-fetch");
-const math = require("mathjs")
-const mongoose = require("mongoose")
+const math = require("mathjs");
+const mongoose = require("mongoose");
+const Loser = require("./models/loser")
 
-mongoose.connect('mongodb+srv://vtao:${process.env.MONGODB_PASSWORD}@cluster0.ibtua.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority', 
+mongoose.connect("mongodb+srv://vtao:" + process.env.MONGODB_PASSWORD + "@cluster0.ibtua.mongodb.net/" + process.env.DB_NAME+ "?retryWrites=true&w=majority", 
     {useNewUrlParser: true,
     useUnifiedTopology: true}).then(console.log("Connected to DB"));
 
@@ -51,8 +52,43 @@ client.on('message', msg => {
 
     if (msg.content.toLowerCase().indexOf("game") >= 0 && !msg.author.bot){
         msg.reply("you lost the game")
+        async function updateCount(){
+            let user = await Loser.find({userId:msg.author.id});
+            console.log(user)
+            if (user.length==0) {
+                user = await Loser.create({userId:msg.author.id, count:1})
+                await user.save();
+            } else {
+                let user = await Loser.findOneAndUpdate({userId:msg.author.id}, {useFindAndModify: false});
+                user.count += 1;
+                await user.save();
+            }
+        }
+        updateCount();
     }
     
+    if (msg.content.toLowerCase() == "show me who the biggest losers are"){
+        async function showLosers(){
+            let message = "LOSER SCOREBOARD: \n";
+            let losers = await Loser.find({}).sort({count: -1});
+            async function getUsernames(){
+                let i = 0
+                for (loser of losers){
+                    if (i == 11) {
+                        break;
+                    }
+                    i += 1
+                    await client.users.fetch(loser.userId).then((user) => {
+                        message += i + ". " + user.username + " has lost the game " + loser.count + " time(s) \n"
+                    });
+                }
+            }
+            await getUsernames();
+            msg.channel.send(message);
+        }
+        showLosers();
+    }
+
     if (msg.author.username === "funky-bot"){
         msg.reply("shut up no one likes you")
     }
