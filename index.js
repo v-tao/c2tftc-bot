@@ -120,6 +120,10 @@ client.on('message', msg => {
     if (msg.author.id == 356797398040707075) {
         msg.channel.send("alex no")
     }
+
+    if (msg.author.id == 221444863013421056){
+        msg.channel.send("loser");
+    }
 });
 
 client.login(process.env.BOT_TOKEN)
