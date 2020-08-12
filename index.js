@@ -54,7 +54,6 @@ client.on('message', msg => {
         msg.reply("you lost the game")
         async function updateCount(){
             let user = await Loser.find({userId:msg.author.id});
-            console.log(user)
             if (user.length==0) {
                 user = await Loser.create({userId:msg.author.id, count:1})
                 await user.save();
