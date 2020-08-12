@@ -53,12 +53,12 @@ client.on('message', msg => {
     if (msg.content.toLowerCase().indexOf("game") >= 0 && !msg.author.bot){
         msg.reply("you lost the game")
         async function updateCount(){
-            let user = await Loser.find({userId:msg.author.id});
+            let user = await Loser.find({userId:msg.author.id, serverId:msg.guild.id});
             if (user.length==0) {
-                user = await Loser.create({userId:msg.author.id, count:1})
+                user = await Loser.create({userId:msg.author.id, serverId:msg.guild.id, count:1})
                 await user.save();
             } else {
-                let user = await Loser.findOneAndUpdate({userId:msg.author.id}, {useFindAndModify: false});
+                let user = await Loser.findOneAndUpdate({userId:msg.author.id, serverId:msg.guild.id}, {useFindAndModify: false});
                 user.count += 1;
                 await user.save();
             }
@@ -66,10 +66,10 @@ client.on('message', msg => {
         updateCount();
     }
     
-    if (msg.content.toLowerCase() == "show me who the biggest losers are"){
+    if (msg.content.toLowerCase() == "who are the biggest losers"){
         async function showLosers(){
             let message = "LOSER SCOREBOARD: \n";
-            let losers = await Loser.find({}).sort({count: -1});
+            let losers = await Loser.find({serverId:msg.guild.id}).sort({count: -1});
             async function getUsernames(){
                 let i = 0
                 for (loser of losers){
