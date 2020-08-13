@@ -1,4 +1,4 @@
-// require('dotenv').config();
+require('dotenv').config();
 const Discord = require('discord.js');
 const client = new Discord.Client();
 const fetch = require("node-fetch");
@@ -133,9 +133,42 @@ const formatDays = (days) => {
 }
 
 client.on('message', msg => {
+
+    const rpsFilter = (reaction, user) => {
+        return (reaction.emoji.name == "✊" || reaction.emoji.name == "✋" || reaction.emoji.name == "✌️" )&& !user.bot;
+    }
+    
+
     if (msg.content.toLowerCase().indexOf("say ") >= 0 && !msg.author.bot) {
         const newMessage = msg.content.substring(msg.content.toLowerCase().indexOf("say ") + 4, msg.content.length);
         msg.channel.send(newMessage);
+    }
+
+    if (msg.content.toLowerCase().indexOf("play rock paper scissors") >= 0 && !msg.author.bot){
+        msg.channel.send("Let's play rock paper scissors! You have 60 seconds to react with your move.")
+    }
+
+    if (msg.content == "Let's play rock paper scissors! You have 60 seconds to react with your move."){
+        msg.react("✊")
+            .then(msg.react("✋"))
+            .then(msg.react("✌️"))
+            .then(() => {
+                const rpsCollector = msg.createReactionCollector(rpsFilter, {max: 1, time: 60000, errors: ["time"]})
+                rpsCollector.on("collect", reaction => {
+                    switch(reaction.emoji.name){
+                        case "✊":
+                            msg.channel.send("✋ I choose paper. I win!");
+                            break;
+                        case "✋":
+                            msg.channel.send("✌️ I choose scissors. I win!");
+                            break;
+                        case "✌️":
+                            msg.channel.send("✊ I choose rock. I win!");
+                            break;
+                    }
+                })
+            })
+            .catch((err) => msg.channel.send(err))
     }
 
     if (msg.content.toLowerCase().indexOf("game") >= 0 && !msg.author.bot){
