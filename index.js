@@ -1,4 +1,4 @@
-require('dotenv').config();
+// require('dotenv').config();
 const Discord = require('discord.js');
 const client = new Discord.Client();
 const fetch = require("node-fetch");
@@ -155,17 +155,26 @@ client.on('message', msg => {
             .then(() => {
                 const rpsCollector = msg.createReactionCollector(rpsFilter, {max: 1, time: 60000, errors: ["time"]})
                 rpsCollector.on("collect", reaction => {
-                    switch(reaction.emoji.name){
-                        case "✊":
-                            msg.channel.send("✋ I choose paper. I win!");
-                            break;
-                        case "✋":
-                            msg.channel.send("✌️ I choose scissors. I win!");
-                            break;
-                        case "✌️":
-                            msg.channel.send("✊ I choose rock. I win!");
-                            break;
+                    let answer = "";
+                    if (Math.random() <= 0.33) {
+                        answer = {emoji:"✊", name:"rock"};
+                    } else if (Math.random() >= 0.66) {
+                        answer = {emoji:"✋", name:"paper"};
+                    } else {
+                        answer = {emoji:"✌️", name:"scissors"};
                     }
+
+                    let winMessage = ""
+                    if (reaction.emoji.name == answer.emoji){
+                        winMessage = "We tied!"
+                    } else if (reaction.emoji.name == "✊"){
+                        winMessage = answer.emoji == "✋" ? "I win!" : "I lose!"
+                    } else if (reaction.emoji.name == "✋"){
+                        winMessage = answer.emoji == "✌️" ? "I win!" : "I lose!"
+                    } else if (reaction.emoji.name == "✌️"){
+                        winMessage = answer.emoji == "✊" ? "I win!" : "I lose!"
+                    }
+                    msg.channel.send(`${answer.emoji} I choose ${answer.name}. ${winMessage}`)
                 })
             })
             .catch((err) => msg.channel.send(err))
