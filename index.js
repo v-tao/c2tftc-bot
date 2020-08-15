@@ -137,10 +137,6 @@ client.on('message', msg => {
         msg.reply("shut up no one likes you")
     }
 
-    if (msg.content.toLowerCase().indexOf("tell me a bee joke") >= 0){
-        msg.channel.send(beeJokes[Math.floor(Math.random()*beeJokes.length)])
-    }
-
     if (msg.content.toLowerCase().indexOf("what day is it today") >= 0){
         fetchAsync("https://nationaldaycalendar.com/what-is-national-today/")
             .then(text => getDays(text))
