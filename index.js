@@ -172,20 +172,41 @@ client.on('message', msg => {
     }
 
     if (msg.content.toLowerCase().match(/tell me an? (.*) joke/)){
-        const punTopic = msg.content.toLowerCase().match(/tell me an? (.*) joke/)[1];
-        fetchAsync("https://punsandjokes.com/" + punTopic + "-puns/")
-        .then((text) => {
-            if (text.indexOf("Page not found") < 0){
-                const punSoup = new JSSoup(text);
-                const div = punSoup.find("div", "text");
-                const ul = div.find("ul");
-                const puns = ul.findAll("strong");
-                const pun = puns[Math.floor(Math.random() * puns.length)];
-                msg.channel.send(pun.text);
-            }
-        }).catch(() => {
-            msg.channel.send("Sorry, I couldn't find any jokes about that topic")
-        })
+        const punTopic = msg.content.toLowerCase().match(/tell me an? (.*) joke/)[1].replace(" ", "-");
+        let done = false;
+        fetchAsync("https://punsandoneliners.com/randomness/" + punTopic + "-jokes/")
+            .then((text)=> {
+                if (text && text.indexOf("404 Not Found") < 0) {
+                    const checkText = soupObject => soupObject.text != "&nbsp;"
+                    let soup = new JSSoup(text);
+                    let div = soup.find("div", "entry-content");
+                    let p = div.findAll("p");
+                    p = p.slice(4, p.length-4);
+                    let puns = p.filter(checkText);
+                    let pun = puns[Math.floor(Math.random() * puns.length)];
+                    msg.channel.send(decodeURIComponent(encodeURIComponent(pun.text)));
+                    done = true;
+                } 
+            }).catch((err)=> {
+                msg.channel.send("Sorry, I don't know any jokes about that topic")
+                console.log(err);
+            });
+        if (!done) {
+            fetchAsync("https://punsandjokes.com/" + punTopic + "-puns/")
+            .then((text) => {
+                if (text.indexOf("Page not found") < 0){
+                    let soup = new JSSoup(text);
+                    let div = soup.find("div", "text");
+                    let ul = div.find("ul");
+                    let puns = ul.findAll("strong");
+                    let pun = puns[Math.floor(Math.random() * puns.length)];
+                    msg.channel.send(pun.text);
+                } 
+            }) .catch(()=> {
+                msg.channel.send("Sorry, I don't know any jokes about that topic");
+                done = true;
+            })
+        }
     }
 });
 
