@@ -1,8 +1,10 @@
-require('dotenv').config();
+// require('dotenv').config();
 const Discord = require('discord.js');
 const client = new Discord.Client();
 const fetch = require("node-fetch");
 const JSSoup = require("jssoup").default;
+const Entities = require('html-entities').XmlEntities;
+const entities = new Entities();
 const math = require("mathjs");
 const mongoose = require("mongoose");
 const Loser = require("./models/loser")
@@ -184,7 +186,7 @@ client.on('message', msg => {
                         p = p.slice(4, p.length-4);
                         let puns = p.filter(checkText);
                         let pun = puns[Math.floor(Math.random() * puns.length)];
-                        msg.channel.send(decodeURIComponent(encodeURIComponent(pun.text)));
+                        msg.channel.send(entities.decode(pun.text));
                         resolve(true);
                     } else {
                         msg.channel.send("Sorry, I don't know any jokes about that topic")
