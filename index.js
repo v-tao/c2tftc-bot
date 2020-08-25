@@ -166,7 +166,7 @@ client.on('message', msg => {
     }
 
     if (msg.author.id == 221444863013421056){
-        msg.channel.send("winner winner chicken dinner");
+        msg.author.send("loser");
     }
 
     if (msg.content.toLowerCase().match(/tell me an? (.*) joke/)){
