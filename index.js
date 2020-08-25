@@ -133,10 +133,6 @@ client.on('message', msg => {
         showLosers();
     }
 
-    if (msg.author.username === "funky-bot"){
-        msg.reply("shut up no one likes you")
-    }
-
     if (msg.content.toLowerCase().indexOf("what day is it today") >= 0){
         fetchAsync("https://nationaldaycalendar.com/what-is-national-today/")
             .then(text => getDays(text))
@@ -163,10 +159,6 @@ client.on('message', msg => {
 
     if (msg.author.id == 356797398040707075) {
         msg.channel.send("alex no")
-    }
-
-    if (msg.author.id == 221444863013421056){
-        msg.author.send("loser");
     }
 
     if (msg.content.toLowerCase().match(/tell me an? (.*) joke/)){
