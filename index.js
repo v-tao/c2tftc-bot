@@ -1,4 +1,4 @@
-// require('dotenv').config();
+require('dotenv').config();
 const Discord = require('discord.js');
 const client = new Discord.Client();
 const fetch = require("node-fetch");
@@ -7,7 +7,8 @@ const Entities = require('html-entities').XmlEntities;
 const entities = new Entities();
 const math = require("mathjs");
 const mongoose = require("mongoose");
-const Loser = require("./models/loser")
+const Loser = require("./models/loser");
+const Scammer = require("./models/scammer");
 
 mongoose.connect("mongodb+srv://vtao:" + process.env.MONGODB_PASSWORD + "@cluster0.ibtua.mongodb.net/" + process.env.DB_NAME+ "?retryWrites=true&w=majority", 
     {useNewUrlParser: true,
@@ -97,7 +98,7 @@ client.on('message', msg => {
 
     if (msg.content.toLowerCase().indexOf("game") >= 0 && !msg.author.bot){
         msg.reply("you lost the game")
-        async function updateCount(){
+        async function updateLoserCount(){
             let user = await Loser.find({userId:msg.author.id, serverId:msg.guild.id});
             if (user.length==0) {
                 user = await Loser.create({userId:msg.author.id, serverId:msg.guild.id, count:1})
@@ -108,7 +109,7 @@ client.on('message', msg => {
                 await user.save();
             }
         }
-        updateCount();
+        updateLoserCount();
     }
     
     if (msg.content.toLowerCase() == "who are the biggest losers"){
@@ -118,7 +119,7 @@ client.on('message', msg => {
             async function getUsernames(){
                 let i = 0
                 for (loser of losers){
-                    if (i == 11) {
+                    if (i == 10) {
                         break;
                     }
                     i += 1
@@ -159,6 +160,47 @@ client.on('message', msg => {
 
     if (msg.author.id == 356797398040707075) {
         msg.channel.send("alex no")
+    }
+
+    if (msg.content.indexOf("scam++") == 0){
+        const scammer = msg.mentions.users.first();
+        if (!scammer){
+            return;
+        }
+        async function updateScamCount(){
+            let user = await Scammer.find({userId:scammer.id, serverId:msg.guild.id});
+            if (user.length==0) {
+                user = await Scammer.create({userId:scammer.id, serverId:msg.guild.id, count:1})
+                await user.save();
+            } else {
+                let user = await Scammer.findOneAndUpdate({userId:scammer.id, serverId:msg.guild.id}, {useFindAndModify: false});
+                user.count += 1;
+                await user.save();
+            }
+        }
+        updateScamCount();
+    }
+
+    if (msg.content.toLowerCase() == "who are the biggest scammers"){
+        async function showScammers(){
+            let message = "SCAM COUNT: \n";
+            let scammers = await Scammer.find({serverId:msg.guild.id}).sort({count: -1});
+            async function getUsernames(){
+                let i = 0
+                for (scammer of scammers){
+                    if (i == 10) {
+                        break;
+                    }
+                    i += 1
+                    await client.users.fetch(scammer.userId).then((user) => {
+                        message += i + ". " + user.username + " has scammed " + scammer.count + " time(s) \n"
+                    });
+                }
+            }
+            await getUsernames();
+            msg.channel.send(message);
+        }
+        showScammers();
     }
 
     if (msg.content.toLowerCase().match(/tell me an? (.*) joke/)){
