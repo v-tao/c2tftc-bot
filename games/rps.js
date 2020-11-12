@@ -19,9 +19,10 @@ const playRPS = (msg) => {
                 const rpsCollector = msg.createReactionCollector(rpsFilter, {max: 1, time: 60000, errors: ["time"]})
                 rpsCollector.on("collect", reaction => {
                     let answer = "";
-                    if (Math.random() <= 0.33) {
+                    const prob = Math.random();
+                    if (prob <= 0.33) {
                         answer = {emoji:"✊", name:"rock"};
-                    } else if (Math.random() >= 0.66) {
+                    } else if (prob >= 0.66) {
                         answer = {emoji:"✋", name:"paper"};
                     } else {
                         answer = {emoji:"✌️", name:"scissors"};
