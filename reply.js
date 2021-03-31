@@ -37,4 +37,9 @@ const replyIm = (msg) => {
     }
 }
 
-module.exports = {replySay, replyIm};
+const replySecret = (msg) => {
+    if (msg.content=="I proudly announce that I am a furry uwu") {
+        msg.channel.send("The answer to this puzzle is MESSAGES");
+    }
+}
+module.exports = {replySay, replyIm, replySecret};
