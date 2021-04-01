@@ -7,7 +7,7 @@ const {respondRPS, playRPS} = require("./games/rps");
 const {incrementScam, displayScammers} = require('./leaderboards/scam');
 const {incrementLoss, displayLosers} = require("./leaderboards/loser");
 const tellJoke = require("./joke");
-const {replySay, replyIm, replySecret} = require('./reply');
+const {replySay, replyIm, replySecret, replyOur} = require('./reply');
 
 mongoose.connect("mongodb+srv://vtao:" + process.env.MONGODB_PASSWORD + "@cluster0.ibtua.mongodb.net/" + process.env.DB_NAME+ "?retryWrites=true&w=majority", 
     {useNewUrlParser: true,
@@ -34,6 +34,7 @@ client.on('message', msg => {
     replySay(msg);
     replyIm(msg);
     replySecret(msg);
+    replyOur(msg)
 
 });
 
