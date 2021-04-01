@@ -36,7 +36,8 @@ const displayScammers = (client, msg) => {
                     }
                     i += 1
                     await client.users.fetch(scammer.userId).then((user) => {
-                        message += i + ". " + user.username + " has scammed " + scammer.count + " time(s) \n"
+                        let time = scammer.count > 1 ? "times" : "time";
+                        message += i + ". " + user.username + " has scammed " + scammer.count + " " + time + " \n"
                     });
                 }
             }

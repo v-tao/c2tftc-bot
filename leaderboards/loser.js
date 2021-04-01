@@ -34,7 +34,8 @@ const displayLosers = (client, msg) => {
                     }
                     i += 1
                     await client.users.fetch(loser.userId).then((user) => {
-                        message += i + ". " + user.username + " has lost the game " + loser.count + " time(s) \n"
+                        let time = loser.count > 1 ? "times" : "time";
+                        message += i + ". " + user.username + " has lost the game " + loser.count + " " + time + "\n";
                     });
                 }
             }
