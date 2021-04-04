@@ -43,21 +43,4 @@ const replySecret = (msg) => {
     }
 }
 
-const replyOur = (msg) => {
-    if (!msg.author.bot) {
-        const ourPronouns = ["my", "your", "her", "his", "their"]
-        const oursPronouns = ["mine", "yours", "hers", "his", "theirs"]
-        const wePronouns = ["i", "you", "she", "he", "they"]
-        const usPronouns = ["me", "him", "them"]
-        if (ourPronouns.some(pronoun => msg.content.toLowerCase().split(" ").includes(pronoun))){
-            msg.channel.send("*our")
-        } else if (oursPronouns.some(pronoun => msg.content.toLowerCase().split(" ").includes(pronoun))){
-            msg.channel.send("*ours")
-        } else if (wePronouns.some(pronoun => msg.content.toLowerCase().split(" ").includes(pronoun))) {
-            msg.channel.send("*we")
-        } else if (usPronouns.some(pronoun => msg.content.toLowerCase().split(" ").includes(pronoun))) {
-            msg.channel.send("*us")
-        }
-    }
-}
-module.exports = {replySay, replyIm, replySecret, replyOur};
+module.exports = {replySay, replyIm, replySecret};
