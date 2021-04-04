@@ -7,8 +7,8 @@ async function fetchAsync(url) {
 }
 
 async function getDays(text) {
-    let days = text.match(/<meta itemprop='description' content='(.*?)' \/>/g);
-    days = days.map(str => str.substring(38, str.indexOf("' />")))
+    let days = text.match(/"name": "(.*?)"/g)
+    days = days.map(str => str.substring(9, str.length-1))
     return days
 }
 
@@ -32,11 +32,14 @@ const formatDays = (days) => {
 
 const respondNationalDay = (msg) => {
     if (msg.content.toLowerCase().indexOf("what day is it today") >= 0){
-        fetchAsync("https://nationaldaycalendar.com/what-is-national-today/")
+        fetchAsync("https://nationaldaycalendar.com/what-day-is-it/")
             .then(text => getDays(text))
             .then(days => formatDays(days))
             .then(message => msg.channel.send(message))
-            .catch(err => msg.channel.send("oops bot screwed up"))
+            .catch(err => {
+                msg.channel.send("oops bot screwed up");
+                console.log(err);
+            })
     }
 }
 
